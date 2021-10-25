@@ -4,9 +4,22 @@ using UnityEngine;
 
 public class RecordManager : MonoBehaviour
 {
+    private static RecordManager _instance;
+    public static RecordManager Instance { get { return _instance; } }
+
     private ObjectRecording[] objectRecordings;
     int index = 0;
     int FramesRecorded;
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        _instance = this;
+    }
 
     private void Start()
     {
@@ -25,8 +38,12 @@ public class RecordManager : MonoBehaviour
 
             if(FramesRecorded == index)
             {
-                GameManager.Instance.IsReplaying = false;
+                foreach (ObjectRecording recording in objectRecordings)
+                {
+                    recording.TurnOnRigidBody();
+                }
                 index = 0;
+                GameManager.Instance.IsReplaying = false;
             }
         }
         else if(GameManager.Instance.IsRecording)

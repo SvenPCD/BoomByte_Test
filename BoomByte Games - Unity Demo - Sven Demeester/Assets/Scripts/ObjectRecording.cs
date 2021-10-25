@@ -25,10 +25,28 @@ public class ObjectRecording : MonoBehaviour
 
     public void SetTransform(int index)
     {
-        RecordFrame rf = recordedFrames[index];
+        if (index < recordedFrames.Count)
+        {
+            RecordFrame rf = recordedFrames[index];
 
-        transform.position = rf.position;
-        transform.rotation = rf.rotation;
+            if (rigidBody != null)
+            {
+                rigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                rigidBody.isKinematic = true;
+            }
+
+            transform.position = rf.position;
+            transform.rotation = rf.rotation;
+        }
+    }
+
+    public void TurnOnRigidBody()
+    {
+        if (rigidBody != null)
+        {
+            rigidBody.isKinematic = false;
+            rigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
     }
 
 }

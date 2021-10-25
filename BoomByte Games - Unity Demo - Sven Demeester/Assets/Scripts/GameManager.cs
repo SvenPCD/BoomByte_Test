@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public bool IsReplaying = false;
     [HideInInspector]
     public bool IsRecording = false;
+    [HideInInspector]
+    public bool IsBallRolling = false;
 
     [SerializeField]
     private AudioMixer mixer;
