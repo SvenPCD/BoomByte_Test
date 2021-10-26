@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     private float Height = 1f;
 
     [SerializeField]
-    private float speed = 100f;
+    private float _Speed = 100f;
 
     private Vector3 CamOffset;
 
@@ -24,19 +24,17 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.Instance.IsReplaying)
-        {
+
             if (Input.GetKey(KeyCode.A))
             {
-                CamOffset = Quaternion.AngleAxis(Time.deltaTime * speed, Vector3.up) * CamOffset;
+                CamOffset = Quaternion.AngleAxis(Time.deltaTime * -_Speed, Vector3.up) * CamOffset;
             }
             else if (Input.GetKey(KeyCode.D))
             {
-                CamOffset = Quaternion.AngleAxis(Time.deltaTime * -speed, Vector3.up) * CamOffset;
+                CamOffset = Quaternion.AngleAxis(Time.deltaTime * _Speed, Vector3.up) * CamOffset;
             }
 
             this.transform.position = BallTransform.position + CamOffset;
             this.transform.LookAt(BallTransform.position + new Vector3(0, Height, 0));
-        }
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\BallStopper.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\ImpactSound.cs" />
     <Compile Include="Assets\Scripts\IngameUI.cs" />
     <Compile Include="Assets\Scripts\MainMenuUI.cs" />
     <Compile Include="Assets\Scripts\MatchManager.cs" />

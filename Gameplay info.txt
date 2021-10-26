@@ -1,0 +1,14 @@
+----Controls----
+
+A + D :Rotate Camera Around White Ball
+Hold Space : Makes the hitstrength oscillate between max and min strength
+Release Space : Shoot the White ball
+
+Replay button replays your previous shot
+Slow Replay button replays your previous shot at half speed
+Skip Replay Skips the replay and returns you to your correct position.
+
+
+----Goal----
+You get 1 point each time you manage to hit the yellow and red ball in one shot.
+Try and get 3 points in as little shots and time as possible.

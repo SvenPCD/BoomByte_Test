@@ -797,7 +797,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsReplaying: 0
-  mixer: {fileID: 24100000, guid: 5865d5b37d9ad8e44ab71f26b55ecced, type: 2}
+  IsRecording: 0
+  IsBallRolling: 0
+  _Mixer: {fileID: 24100000, guid: 5865d5b37d9ad8e44ab71f26b55ecced, type: 2}
+  SaveFile: 
 --- !u!4 &707748288
 Transform:
   m_ObjectHideFlags: 0

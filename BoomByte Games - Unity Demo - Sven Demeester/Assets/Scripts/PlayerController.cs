@@ -6,87 +6,116 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
-    private Transform CameraTrans;
+    private Transform _CameraTrans;
     [SerializeField]
-    private float MaxHitSpeed = 5;
+    private float _MaxHitSpeed = 5;
     [SerializeField]
-    private float MinHitSpeed = 1;
+    private float _MinHitSpeed = 1;
 
-    private float CurrentSpeed = 0;
-    private float HitStrength = 0;
+    private float _CurrentSpeed = 0;
+    private float _HitStrength = 0;
 
-    private bool IsGoingUp = false;
-
-    [SerializeField]
-    private Slider PowerSlider;
+    private bool _IsGoingUp = false;
 
     [SerializeField]
-    private LineRenderer Targeting;
+    private Slider _PowerSlider;
+
+    [SerializeField]
+    private LineRenderer _Targeting;
+
+
+    private bool _IsYellowHit = false;
+    private bool _IsRedHit = false;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
+
         if (!GameManager.Instance.IsBallRolling && !GameManager.Instance.IsReplaying)
         {
-            Vector3 Diretion = this.transform.position - CameraTrans.position;
-            Diretion.y = 0;
+            Vector3 Direction = this.transform.position - _CameraTrans.position;
+            Direction.y = 0;
+
+            MatchManager.Instance.CanScore = true;
+            _IsYellowHit = false;
+            _IsRedHit = false;
 
             if (Input.GetKey(KeyCode.Space))
             {
-                PowerSlider.gameObject.SetActive(true);
+                _PowerSlider.gameObject.SetActive(true);
 
-                if (IsGoingUp)
+                if (_IsGoingUp)
                 {
-                    HitStrength += Time.deltaTime;
+                    _HitStrength += Time.deltaTime;
 
-                    if (HitStrength >= 1) IsGoingUp = false;
+                    if (_HitStrength >= 1) _IsGoingUp = false;
                 }
                 else
                 {
-                    HitStrength -= Time.deltaTime;
+                    _HitStrength -= Time.deltaTime;
 
-                    if (HitStrength <= 0) IsGoingUp = true;
+                    if (_HitStrength <= 0) _IsGoingUp = true;
                 }
 
-                PowerSlider.value = HitStrength;
+                _PowerSlider.value = _HitStrength;
             }
             else if (Input.GetKeyUp(KeyCode.Space))
             {
-                CurrentSpeed = Mathf.Lerp(MinHitSpeed, MaxHitSpeed, HitStrength);
+                _CurrentSpeed = Mathf.Lerp(_MinHitSpeed, _MaxHitSpeed, _HitStrength);
 
-                GetComponent<Rigidbody>().velocity = Diretion * CurrentSpeed;
+                GetComponent<Rigidbody>().velocity = Direction * _CurrentSpeed;
 
-                HitStrength = 0;
+                _HitStrength = 0;
                 RecordManager.Instance.StartRecording();
+                MatchManager.Instance.AddShot();
             }
 
-            Ray ray = new Ray(transform.position, Diretion);
+            Ray ray = new Ray(transform.position, Direction);
             RaycastHit hitData;
             Physics.Raycast(ray, out hitData);
 
             if (Physics.Raycast(ray, out hitData))
             {
-                Targeting.gameObject.SetActive(true);
-                Targeting.transform.position = hitData.point;
-                Targeting.SetPosition(0, this.transform.position);
-                Targeting.SetPosition(1, hitData.point);
+                _Targeting.gameObject.SetActive(true);
+                _Targeting.transform.position = hitData.point;
+                _Targeting.SetPosition(0, this.transform.position);
+                _Targeting.SetPosition(1, hitData.point);
             }
-            Debug.DrawRay(transform.position, Diretion * 10);
-
-            
         }
         else
         {
-            Targeting.gameObject.SetActive(false);
-            PowerSlider.gameObject.SetActive(false);
+            _Targeting.gameObject.SetActive(false);
+            _PowerSlider.gameObject.SetActive(false);
         }
 
     }
-    
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (MatchManager.Instance.CanScore)
+        {
+            if (collision.gameObject.tag == "YellowBall")
+            {
+                _IsYellowHit = true;
+                if (_IsRedHit)
+                {
+                    MatchManager.Instance.GainPoint();
+                    _IsYellowHit = false;
+                    _IsRedHit = false;
+                }
+            }
+            else if(collision.gameObject.tag == "RedBall")
+            {
+                _IsRedHit = true;
+                if (_IsYellowHit)
+                {
+                    MatchManager.Instance.GainPoint();
+                    _IsYellowHit = false;
+                    _IsRedHit = false;
+                }
+            }
+        }
+    }
+
 }

@@ -5,34 +5,34 @@ using UnityEngine;
 public class ObjectRecording : MonoBehaviour
 {
 
-    private List<RecordFrame> recordedFrames = new List<RecordFrame>();
-    private Rigidbody rigidBody;
+    private List<RecordFrame> _RecordedFrames = new List<RecordFrame>();
+    private Rigidbody _RigidBody;
 
     private void Start()
     {
         if(GetComponent<Rigidbody>() != null)
         {
-            rigidBody = GetComponent<Rigidbody>();
+            _RigidBody = GetComponent<Rigidbody>();
         }
     }
 
-    public void ResetRecording() { recordedFrames.Clear(); }
+    public void ResetRecording() { _RecordedFrames.Clear(); }
 
     public void AddRecordFrame()
     {
-        recordedFrames.Add(new RecordFrame { position = transform.position, rotation = transform.rotation });
+        _RecordedFrames.Add(new RecordFrame { position = transform.position, rotation = transform.rotation });
     }
 
     public void SetTransform(int index)
     {
-        if (index < recordedFrames.Count)
+        if (index < _RecordedFrames.Count)
         {
-            RecordFrame rf = recordedFrames[index];
+            RecordFrame rf = _RecordedFrames[index];
 
-            if (rigidBody != null)
+            if (_RigidBody != null)
             {
-                rigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                rigidBody.isKinematic = true;
+                _RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                _RigidBody.isKinematic = true;
             }
 
             transform.position = rf.position;
@@ -42,10 +42,10 @@ public class ObjectRecording : MonoBehaviour
 
     public void TurnOnRigidBody()
     {
-        if (rigidBody != null)
+        if (_RigidBody != null)
         {
-            rigidBody.isKinematic = false;
-            rigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _RigidBody.isKinematic = false;
+            _RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
     }
 

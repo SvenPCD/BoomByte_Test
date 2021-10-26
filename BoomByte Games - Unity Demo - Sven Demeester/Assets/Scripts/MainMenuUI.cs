@@ -1,48 +1,41 @@
 ﻿using System.Collections;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
 {
-
-    string saveFile;
     [SerializeField]
     private Text _TextLastGame;
     private void Awake()
     {
-        saveFile = Application.persistentDataPath + "/SaveFileBilliard.json";
 
-        if (File.Exists(saveFile))
+        if (File.Exists(GameManager.Instance.SaveFile))
         {
-            string Contents = File.ReadAllText(saveFile);
+            string Contents = File.ReadAllText(GameManager.Instance.SaveFile);
 
             GameResult gameResult = JsonUtility.FromJson<GameResult>(Contents);
 
-            _TextLastGame.text = "Score: " + gameResult.Score.ToString() + "\n" + "Shots Made: " + gameResult.ShotsMade.ToString() + "\n" + "timespent: " + gameResult.TimeSpent.ToString() ;
-            
+            StringBuilder SB = new StringBuilder();
+            SB.Append("Score: ");
+            SB.Append(gameResult.Score.ToString());
+            SB.Append("\n");
+            SB.Append("ShotCount: ");
+            SB.Append(gameResult.ShotsMade.ToString());
+            SB.Append("\n");
+            SB.Append("Time: ");
+            SB.Append(gameResult.TimeSpent.ToString());
+            SB.Append(" s");
+
+            _TextLastGame.text = SB.ToString();
 
         }
         else
         {
             _TextLastGame.text = "No game recorded yet";
-            WriteFile();
         }
-    }
-
-    public void WriteFile()
-    {
-
-        GameResult Test = new GameResult();
-
-        Test.Score = 2;
-        Test.ShotsMade = 10;
-        Test.TimeSpent = 2f;
-
-        string jsonString = JsonUtility.ToJson(Test);
-
-        File.WriteAllText(saveFile, jsonString);
     }
 
 
@@ -56,8 +49,3 @@ public class MainMenuUI : MonoBehaviour
 
     public void SetVolume( float sliderValue){GameManager.Instance.SetVolume(sliderValue);}
 }
-
-
-// score
-// shots made
-// Time spent

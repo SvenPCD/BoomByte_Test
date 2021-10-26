@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class RecordManager : MonoBehaviour
 {
-    private static RecordManager _instance;
-    public static RecordManager Instance { get { return _instance; } }
+    private static RecordManager _Instance;
+    public static RecordManager Instance { get { return _Instance; } }
 
     private ObjectRecording[] objectRecordings;
-    int index = 0;
-    int FramesRecorded;
+    int _Index = 0;
+    int _FramesRecorded;
+
+    public bool HasRecorded = false;
 
     private void Awake()
     {
-        if (_instance != null && _instance != this)
+        if (_Instance != null && _Instance != this)
         {
             Destroy(this.gameObject);
             return;
         }
-        _instance = this;
+        _Instance = this;
     }
 
     private void Start()
@@ -32,18 +34,19 @@ public class RecordManager : MonoBehaviour
         {
             foreach(ObjectRecording recording in objectRecordings)
             {
-                recording.SetTransform(index);
+                recording.SetTransform(_Index);
             }
-            index++;
+            _Index++;
 
-            if(FramesRecorded == index)
+            if(_FramesRecorded <= _Index)
             {
                 foreach (ObjectRecording recording in objectRecordings)
                 {
                     recording.TurnOnRigidBody();
                 }
-                index = 0;
+                _Index = 0;
                 GameManager.Instance.IsReplaying = false;
+                Time.timeScale = 1;
             }
         }
         else if(GameManager.Instance.IsRecording)
@@ -52,12 +55,13 @@ public class RecordManager : MonoBehaviour
             {
                 recording.AddRecordFrame();
             }
-            FramesRecorded++;
+            _FramesRecorded++;
         }
     }
 
     public void StartRecording()
     {
+        _FramesRecorded = 0;
         foreach (ObjectRecording recording in objectRecordings)
         {
             recording.ResetRecording();
@@ -68,14 +72,39 @@ public class RecordManager : MonoBehaviour
     public void StopRecording()
     {
         GameManager.Instance.IsRecording = false;
+        HasRecorded = true;
     }
 
+    public void SkipReplay()
+    {
+        _Index = _FramesRecorded - 1;
+        foreach (ObjectRecording recording in objectRecordings)
+        {
+            recording.SetTransform(_Index);
+            recording.TurnOnRigidBody();
+        }
+
+        _Index = 0;
+        GameManager.Instance.IsReplaying = false;
+        Time.timeScale = 1;
+    }
 
     public void StartReplay()
     {
-        index = 0;
+        _Index = 0;
 
+        MatchManager.Instance.CanScore = false;
         GameManager.Instance.IsRecording = false;
         GameManager.Instance.IsReplaying = true;
+    }
+
+    public void StartSlowReplay()
+    {
+        _Index = 0;
+
+        MatchManager.Instance.CanScore = false;
+        GameManager.Instance.IsRecording = false;
+        GameManager.Instance.IsReplaying = true;
+        Time.timeScale = 0.5f;
     }
 }

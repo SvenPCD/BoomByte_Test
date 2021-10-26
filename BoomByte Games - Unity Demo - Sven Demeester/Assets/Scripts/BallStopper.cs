@@ -10,7 +10,7 @@ public class BallStopper : MonoBehaviour
     void Update()
     {
         Rigidbody RB = GetComponent<Rigidbody>();
-        if (RB.velocity.magnitude <= 0.05f)
+        if (RB.velocity.magnitude <= 0.1f)
         {
             RB.velocity = Vector3.zero;
             IsStopped = true;
